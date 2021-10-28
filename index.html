@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Contatos</title>
+
+
+    <style>
+        .form-container button {
+            width: 120px;
+            height: 30px;
+            cursor: pointer;
+            border: 1px solid rgba(33, 98, 195, 0.527);
+            margin-top: 10px;
+            border-radius: 20px;
+            color: rgb(39, 119, 224);
+            box-shadow: rgba(0, 0, 0, 0.102) 0px 5px 15px;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5%;
+        }
+
+        .btn-container img {
+            width: 100px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            box-shadow: rgba(0, 0, 0, 0.212) 0px 5px 15px;
+        }
+
+        .btn-container button {
+            width: 120px;
+            height: 30px;
+            cursor: pointer;
+            border: 1px solid rgba(33, 98, 195, 0.527);
+            border-radius: 20px;
+            color: rgb(39, 119, 224);
+            box-shadow: rgba(0, 0, 0, 0.102) 0px 5px 15px;
+        }
+
+        .btn-container button:hover {
+            color: white;
+            background-color: rgb(33, 118, 214);
+        }
+
+        .form-div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: rgb(39, 119, 224);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 10px;
+            padding-top: 5px;
+        }
+
+        .form-container input {
+            border: 2px solid rgb(39, 119, 224);
+            height: 20px;
+            border-radius: 5px;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            border-radius: 12px;
+            border: 2px solid rgb(39, 119, 224);
+            box-shadow: rgba(0, 0, 0, 0.212) 0px 5px 15px;
+        }
+
+        .list-container h2 {
+            color: rgb(39, 119, 224);
+            font-weight: 400;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .list {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
+            height: 100%;
+            font-size: 12px;
+            color: rgb(39, 119, 224);
+            font-weight: 100;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background-color: rgb(255, 255, 255);
+            border: 1px solid rgb(39, 119, 224);
+            box-shadow: rgba(0, 0, 0, 0.212) 0px 5px 15px;
+            margin-bottom: 10px;
+
+        }
+
+        .list-sp {
+            background-color: rgb(39, 119, 224);
+        }
+
+        .list button {
+            margin-left: 10px;
+            font-size: 11px;
+            width: 70px;
+            height: 20px;
+            cursor: pointer;
+            border: 2px solid rgba(33, 98, 195, 0.993);
+            border-radius: 20px;
+            color: rgb(39, 119, 224);
+            box-shadow: rgba(0, 0, 0, 0.102) 0px 5px 15px;
+        }
+
+        .list button:hover {
+            color: white;
+            background-color: rgb(33, 118, 214);
+        }
+
+        .blue-class {
+            background-color: rgba(0, 0, 0, 0.212);
+        }
+
+        .form-div input{
+            color:rgb(61, 61, 61) ;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight:400;
+            font-size: 20px;
+           
+        }
+
+        .click-container {
+            display: flex
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="app">
+        <div class="btn-container">
+            <img src="https://png.pngtree.com/element_origin_min_pic/00/00/06/12575cb97a22f0f.jpg" alt="user">
+            <button @click="showForm = !showForm" v-show="!showForm">Novo Contato</button>
+            <div class="form-container" v-if="showForm">
+                <div class="form-div" @submit>
+                    <label for="">Nome</label>
+                    <input v-maska="'Aa* Aa*'" type="text" v-model="name" required>
+
+                    <label for="">Contato</label>
+                    <input v-maska="'(##) #####-####'" type="tel" v-model="phone" required>
+                    <button @click="addList">{{textButton}}</button>
+                    <p>{{error}}</p>
+
+
+                </div>
+
+
+            </div>
+        </div>
+        <div class="list-container">
+            <h2>Lista de Contatos</h2>
+            <div v-for="(list, index) in lists" :key="index" class="list">
+                <p>Nome: {{list.name}} || <span :class="this.class"> Telefone: {{list.phone}}</span> </p>
+                <div class="click-container">
+                    <button @click="deleteList(index)">Remover</button>
+                    <button @click="editedList(index)">Editar</button>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/maska@latest/dist/maska.js"></script>
+
+
+
+    <script>
+
+        const myApp = {
+            data() {
+                return {
+                    textButton: 'Adicionar',
+
+                    showForm: false,
+                    removeList: true,
+
+                    editList: null,
+
+                    name: '',
+                    phone: '',
+
+                    lists: [],
+                    error: '',
+
+
+                    ddd: true,
+                    class: 'blue-class'
+
+
+
+
+                }
+            },
+            methods: {
+                addList() {
+                    // Validação de Erros
+                    if (this.name, this.phone === '') {
+                        return this.error = "DADOS OBRIGATÓRIOS"
+                    } else if (this.name.length < 4) {
+                        return this.error = 'OBRIGATÓRIO MAIS DE 3 LETRAS'
+                    } else if (this.phone.length < 15) {
+                        return this.error = 'TELEFONE INVALIDO'
+                    } else if (this.name.indexOf(' ') <= 0) {
+                        return this.error = 'É NECESSÁRIO O SOBRENOME'
+                    }
+
+
+
+
+
+
+                    // Inserindo dados na array
+                    if (this.editList === null) {
+                        this.lists.push({
+                            name: this.name,
+                            phone: this.phone,
+
+                        })
+                    }
+
+                    else {
+                        this.lists[this.editList].name = this.name
+                        this.lists[this.editList].phone = this.phone
+                        this.editList = null
+                    }
+
+                    // Mudando valor do boão
+                    this.textButton = "Adicionar"
+                    //Relatando erros
+                    this.error = ''
+
+                    
+                    
+
+                   
+
+
+
+
+                },
+                // Deletar lista
+                deleteList(index) {
+                    this.lists.splice(index, 1)
+                },
+                // Editar lista
+                editedList(index) {
+                    this.name = this.lists[index].name
+                    this.phone = this.lists[index].phone
+                    this.editList = index;
+                    this.textButton = "Editar"
+                }
+
+
+            },
+
+
+
+
+
+        }
+
+        Vue.createApp(myApp).use(Maska).mount('#app')
+
+
+    </script>
+</body>
+
+</html>
